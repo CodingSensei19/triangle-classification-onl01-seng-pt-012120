@@ -1,40 +1,44 @@
-require 'pry'
 class Triangle
-  def initialize(side_1, side_2, side_3)
+  attr_accessor :s1, :s2, :s3
+  attr_writer :kind
+  def initialize(side1, side2, side3)
     @triangle_sides = []
-    @triangle_sides << side_1
-    @triangle_sides << side_2
-    @triangle_sides << side_3
+    # @triangle_sides << side1
+    # @triangle_sides << side2
+    # @triangle_sides << side3
+    @s1 = side1
+    @s2 = side2
+    @s3 = side3
   end
-
-  def valid?
-    sum_one_two = @triangle_sides[0] + @triangle_sides[1]
-    sum_one_three = @triangle_sides[0] + @triangle_sides[2]
-    sum_two_three = @triangle_sides[1] + @triangle_sides[2]
-
-    if (@triangle_sides.none? {|side| side <= 0}) &&
-      (sum_one_two > @triangle_sides[2] && sum_one_three > @triangle_sides[1] && sum_two_three > @triangle_sides[0])
-      return true
-    else
-      return false
-    end
-  end
-
+  # def valid?
+  #   sum1_2 = @triangle_sides[1] + @triangle_sides[2]
+  #   sum2_3 = @triangle_sides[2] + @triangle_sides[3]
+  #   sum3_1 = @triangle_sides[3] + @triangle_sides[1]
+  # end
+  
   def kind
-    if valid?
-      if @triangle_sides.uniq.length == 1
-        return :equilateral
-      elsif @triangle_sides.uniq.length == 2
-        return :isosceles
+    if (@s1 + @s2) <= @s3 || (@s2 + @s3) <= @s1 || (@s3 + @s1) <= @s2
+      begin 
+        raise TriangleError
+        puts error.message
+        end
+      
+      elsif @s1 == @s2 && @s1 == @s3
+        self.kind = :equilateral
+      elsif @s1 == @s2 || @s2 == @s3 || @s3 == @s1 
+        self.kind = :isosceles
       else
-        return :scalene
+        self.kind = :scalene
       end
-    else
-      raise TriangleError
+  end
+  
+  
+  class TriangleError < StandardError
+    def message
+      puts "not a triangle"
     end
   end
 end
 
-class TriangleError < StandardError
+# The sum of the lengths of any two sides of a triangle always exceeds the length of the third side. This is a principle known as the triangle inequality.
 
-end
